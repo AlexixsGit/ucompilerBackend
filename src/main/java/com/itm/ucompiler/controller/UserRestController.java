@@ -20,6 +20,7 @@ import com.itm.ucompiler.dao.AuxDataRepository;
 import com.itm.ucompiler.exceptions.UcompilerException;
 import com.itm.ucompiler.model.User;
 import com.itm.ucompiler.service.UserService;
+import com.itm.ucompiler.util.Encryption;
 import com.itm.ucompiler.util.RestResponse;
 
 /**
@@ -54,7 +55,7 @@ public class UserRestController {
 	}
 
 	/**
-	 * This method save or update a user in the database
+	 * This method save or update an user in the database
 	 * 
 	 * @param userJson
 	 * @return RestResponse
@@ -143,7 +144,9 @@ public class UserRestController {
 		} else {
 			user.setIsSuperAdmin(this.auxDataRepository.findById(user.getIsSuperAdmin().getId()));
 		}
-
-		// TODO complete the method with password encryption
+		if (user.getSex() != null && user.getSex().getId() != null) {
+			user.setSex(this.auxDataRepository.findById(user.getSex().getId()));
+		}
+		user.setUserPassword(Encryption.encryptMD5(user.getUserPassword()));
 	}
 }
