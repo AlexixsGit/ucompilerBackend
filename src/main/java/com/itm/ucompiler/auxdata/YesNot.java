@@ -10,8 +10,23 @@ package com.itm.ucompiler.auxdata;
 public enum YesNot {
 
 	// yes value
-	YES,
+	YES("YES"),
 
 	// not value
-	NOT
+	NOT("NOT");
+
+	private String value;
+
+	YesNot(String value) {
+		this.value = value;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
 }

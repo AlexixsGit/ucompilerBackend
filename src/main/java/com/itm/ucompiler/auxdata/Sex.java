@@ -10,8 +10,23 @@ package com.itm.ucompiler.auxdata;
 public enum Sex {
 
 	// male value
-	MALE,
+	MALE("MALE"),
 
 	// female value
-	FEMALE
+	FEMALE("FEMALE");
+
+	private String value;
+
+	Sex(String value) {
+		this.value = value;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
 }
