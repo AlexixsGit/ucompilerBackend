@@ -55,6 +55,9 @@ public class ParentEntity implements Serializable {
 	}
 
 	public void setCreationDate(Date creationDate) {
+		if (creationDate == null) {
+			creationDate = new Date();
+		}
 		this.creationDate = creationDate;
 	}
 
@@ -63,6 +66,9 @@ public class ParentEntity implements Serializable {
 	}
 
 	public void setModificationDate(Date modificationDate) {
+		if (modificationDate == null) {
+			modificationDate = new Date();
+		}
 		this.modificationDate = modificationDate;
 	}
 }

@@ -1,4 +1,4 @@
-package com.itm.ucompiler.restcontrollers;
+package com.itm.ucompiler.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
