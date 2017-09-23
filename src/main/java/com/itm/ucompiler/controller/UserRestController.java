@@ -2,6 +2,7 @@ package com.itm.ucompiler.controller;
 
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itm.ucompiler.auxdata.Status;
+import com.itm.ucompiler.auxdata.YesNot;
 import com.itm.ucompiler.dao.AuxDataRepository;
 import com.itm.ucompiler.exceptions.UcompilerException;
 import com.itm.ucompiler.model.User;
@@ -45,6 +47,8 @@ public class UserRestController {
 
 	protected ObjectMapper mapper;
 
+	private StringBuilder errorMessage;
+
 	public UserRestController() {
 		this.mapper = new ObjectMapper();
 	}
@@ -59,16 +63,15 @@ public class UserRestController {
 	 * @throws IOException
 	 * @throws UcompilerException
 	 */
-	@RequestMapping(value = "/saveOrUpdate/", method = RequestMethod.POST)
+	@RequestMapping(value = "/saveOrUpdateUser", method = RequestMethod.POST)
 	@Transactional(rollbackFor = Exception.class)
 	public RestResponse saveOrUpdate(@RequestBody String userJson)
 			throws JsonParseException, JsonMappingException, IOException, UcompilerException {
 
 		User user = this.mapper.readValue(userJson, User.class);
 
-		if (this.validate(user)) {
-			return new RestResponse(HttpStatus.NOT_FOUND.value(),
-					"Ya existe una cuenta con el usuario o correo ingresado");
+		if (!this.validate(user)) {
+			return new RestResponse(HttpStatus.NOT_ACCEPTABLE.value(), this.errorMessage.toString());
 		}
 		// Validate if the user is new
 		if (user.getId() == null) {
@@ -84,15 +87,63 @@ public class UserRestController {
 		return new RestResponse(HttpStatus.OK.value(), "Registro guardado exitosamente");
 	}
 
+	/**
+	 * This method validate required fields
+	 * 
+	 * @param user
+	 * @return true if all the required fields are not empty
+	 */
 	private boolean validate(User user) {
-		// TODO complete this method
-		return false;
+		this.errorMessage = new StringBuilder("Falta diligenciar los siguientes campos obligatorios: ");
+		boolean isValid = true;
+		if (StringUtils.trimToNull(user.getUserName()) == null) {
+			this.errorMessage.append("\nNombre de usuario");
+			isValid = false;
+		}
+
+		if (StringUtils.trimToNull(user.getEmail()) == null) {
+			this.errorMessage.append("\nCorreo");
+			isValid = false;
+		}
+
+		if (StringUtils.trimToNull(user.getUserPassword()) == null) {
+			this.errorMessage.append("\nContraseña");
+			isValid = false;
+		}
+		return isValid;
 	}
 
+	/**
+	 * This method complete the information of a user
+	 * 
+	 * @param user
+	 */
 	private void complete(User user) {
-		// TODO complete this method
-		if (user.getUserStatus() != null) {
-			user.setUserStatus(this.auxDataRepository.findByGroup(Status.ACTIVE.getValue()));
+
+		if (user.getUserStatus() == null || user.getUserStatus().getId() == null) {
+			user.setUserStatus(this.auxDataRepository.findByshortName(Status.ACTIVE.getValue()));
+		} else {
+			user.setUserStatus(this.auxDataRepository.findById(user.getUserStatus().getId()));
 		}
+
+		if (user.getIsAdmin() == null || user.getIsAdmin().getId() == null) {
+			user.setIsAdmin(this.auxDataRepository.findByshortName(YesNot.NOT.getValue()));
+		} else {
+			user.setIsAdmin(this.auxDataRepository.findById(user.getIsAdmin().getId()));
+		}
+
+		if (user.getIsPasswordTemp() == null || user.getIsPasswordTemp().getId() == null) {
+			user.setIsPasswordTemp(this.auxDataRepository.findByshortName(YesNot.NOT.getValue()));
+		} else {
+			user.setIsPasswordTemp(this.auxDataRepository.findById(user.getIsPasswordTemp().getId()));
+		}
+
+		if (user.getIsSuperAdmin() == null || user.getIsSuperAdmin().getId() == null) {
+			user.setIsSuperAdmin(this.auxDataRepository.findByshortName(YesNot.NOT.getValue()));
+		} else {
+			user.setIsSuperAdmin(this.auxDataRepository.findById(user.getIsSuperAdmin().getId()));
+		}
+
+		// TODO complete the method with password encryption
 	}
 }
