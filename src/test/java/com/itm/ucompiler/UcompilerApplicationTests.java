@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.itm.ucompiler.auxdata.YesNot;
 import com.itm.ucompiler.model.ParentEntity;
 
 @RunWith(SpringRunner.class)
@@ -14,5 +15,4 @@ public class UcompilerApplicationTests {
 	@Test
 	public void contextLoads() {
 	}
-
 }

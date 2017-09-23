@@ -59,11 +59,21 @@ public class UserRestController {
 						"Ya existe una cuenta con el usuario o correo ingresado");
 			}
 		}
+
+		this.complete(user);
+		
 		return new RestResponse(HttpStatus.OK.value(), "Registro guardado exitosamente");
 	}
 
 	private boolean validate(User user) {
 
 		return false;
+	}
+
+	private void complete(User user) {
+
+		if (user.getUserStatus() != null) {
+
+		}
 	}
 }
