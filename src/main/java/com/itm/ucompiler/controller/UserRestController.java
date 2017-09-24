@@ -1,6 +1,7 @@
 package com.itm.ucompiler.controller;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,12 +79,13 @@ public class UserRestController {
 		if (user.getId() == null) {
 			// Validates if the user exists
 			if (this.userService.userExists(user.getUserName(), user.getEmail())) {
-				return new RestResponse(HttpStatus.NOT_FOUND.value(),
+				return new RestResponse(HttpStatus.NOT_ACCEPTABLE.value(),
 						"Ya existe una cuenta con el usuario o correo ingresado");
 			}
 		}
 
 		this.complete(user);
+		this.userService.save(user);
 
 		return new RestResponse(HttpStatus.OK.value(), "Registro guardado exitosamente");
 	}
@@ -121,6 +123,11 @@ public class UserRestController {
 	 */
 	private void complete(User user) {
 
+		if (user.getIsEmailConfirmed() == null || user.getIsEmailConfirmed().getId() == null) {
+			user.setIsEmailConfirmed(this.auxDataRepository.findByshortName(YesNot.NOT.getValue()));
+		} else {
+			user.setIsEmailConfirmed(this.auxDataRepository.findById(user.getIsEmailConfirmed().getId()));
+		}
 		if (user.getUserStatus() == null || user.getUserStatus().getId() == null) {
 			user.setUserStatus(this.auxDataRepository.findByshortName(Status.ACTIVE.getValue()));
 		} else {
@@ -146,6 +153,14 @@ public class UserRestController {
 		}
 		if (user.getSex() != null && user.getSex().getId() != null) {
 			user.setSex(this.auxDataRepository.findById(user.getSex().getId()));
+		}
+
+		if (user.getCreationDate() == null) {
+			user.setCreationDate(new Date());
+		}
+
+		if (user.getModificationDate() == null) {
+			user.setModificationDate(new Date());
 		}
 		user.setUserPassword(Encryption.encryptMD5(user.getUserPassword()));
 	}

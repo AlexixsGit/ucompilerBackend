@@ -29,4 +29,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	 * @return user found or null
 	 */
 	User findByEmail(String email);
+
+	/**
+	 * This method saves a user into the database
+	 * 
+	 * @param user
+	 * @return user saved
+	 */
+	@SuppressWarnings("unchecked")
+	User save(User user);
 }

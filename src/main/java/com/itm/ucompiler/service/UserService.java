@@ -1,6 +1,7 @@
 package com.itm.ucompiler.service;
 
 import com.itm.ucompiler.exceptions.UcompilerException;
+import com.itm.ucompiler.model.User;
 
 /**
  * 
@@ -23,4 +24,12 @@ public interface UserService {
 	 * @throws UcompilerException
 	 */
 	boolean userExists(String userName, String email) throws UcompilerException;
+
+	/**
+	 * This method saves an user into the database
+	 * 
+	 * @param user
+	 * @return user saved
+	 */
+	User save(User user);
 }
