@@ -75,19 +75,24 @@ public class UserRestController {
 		if (!this.validate(user)) {
 			return new RestResponse(HttpStatus.NOT_ACCEPTABLE.value(), this.errorMessage.toString());
 		}
+
+		// Validates if the user exists
+		User userFound = this.userService.userExists(user.getUserName(), user.getEmail());
 		// Validate if the user is new
-		if (user.getId() == null) {
-			// Validates if the user exists
-			if (this.userService.userExists(user.getUserName(), user.getEmail())) {
-				return new RestResponse(HttpStatus.NOT_ACCEPTABLE.value(),
-						"Ya existe una cuenta con el usuario o correo ingresado");
-			}
+		if (user.getId() == null && userFound != null) {
+			return new RestResponse(HttpStatus.NOT_ACCEPTABLE.value(),
+					"Ya existe una cuenta con el usuario o correo ingresado");
+		} else if (user.getId() != null && !(userFound.getEmail().equals(user.getEmail())
+				&& userFound.getUserName().equals(user.getUserName()))) {
+			return new RestResponse(HttpStatus.NOT_ACCEPTABLE.value(),
+					"No se puede modificar ni el correo ni la contraseña");
 		}
 
 		this.complete(user);
 		this.userService.save(user);
 
-		return new RestResponse(HttpStatus.OK.value(), "Registro guardado exitosamente");
+		return new RestResponse(HttpStatus.OK.value(), "Operacion exitosa");
+
 	}
 
 	/**

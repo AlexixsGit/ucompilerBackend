@@ -20,10 +20,10 @@ public interface UserService {
 	 * 
 	 * @param userName
 	 * @param email
-	 * @return true if user exists
+	 * @return user found
 	 * @throws UcompilerException
 	 */
-	boolean userExists(String userName, String email) throws UcompilerException;
+	User userExists(String userName, String email) throws UcompilerException;
 
 	/**
 	 * This method saves an user into the database

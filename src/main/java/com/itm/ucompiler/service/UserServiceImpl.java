@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 	protected UserRepository userRepository;
 
 	@Override
-	public boolean userExists(String userName, String email) throws UcompilerException {
+	public User userExists(String userName, String email) throws UcompilerException {
 
 		if (StringUtils.trimToNull(userName) == null && StringUtils.trimToNull(email) == null) {
 			throw new UcompilerException("Error: You must enter a username or email");
@@ -34,16 +34,16 @@ public class UserServiceImpl implements UserService {
 		User userFound = userRepository.findByUserName(userName);
 
 		if (userFound != null) {
-			return true;
+			return userFound;
 		}
 
 		userFound = userRepository.findByEmail(email);
 
 		if (userFound != null) {
-			return true;
+			return userFound;
 		}
 
-		return false;
+		return null;
 	}
 
 	@Override
