@@ -18,6 +18,7 @@ public class UcompilerApplicationTests {
 	}
 
 	public static void main(String[] args) {
+		//This shows an encrypted password
 		System.out.println(Encryption.encryptMD5("1234"));
 	}
 }
