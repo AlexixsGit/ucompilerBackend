@@ -20,6 +20,7 @@ import com.itm.ucompiler.auxdata.YesNot;
 import com.itm.ucompiler.dao.AuxDataRepository;
 import com.itm.ucompiler.exceptions.UcompilerException;
 import com.itm.ucompiler.model.User;
+import com.itm.ucompiler.request.UserSaveRequest;
 import com.itm.ucompiler.service.UserService;
 import com.itm.ucompiler.util.Encryption;
 import com.itm.ucompiler.util.RestResponse;
@@ -67,10 +68,11 @@ public class UserRestController {
 	 */
 	@RequestMapping(value = "/saveOrUpdateUser", method = RequestMethod.POST)
 	@Transactional(rollbackFor = Exception.class)
-	public RestResponse saveOrUpdate(@RequestBody String userJson)
+	public RestResponse saveOrUpdate(@RequestBody String userSaveRequestJson)
 			throws JsonParseException, JsonMappingException, IOException, UcompilerException {
 
-		User user = this.mapper.readValue(userJson, User.class);
+		UserSaveRequest userSaveRequest = this.mapper.readValue(userSaveRequestJson, UserSaveRequest.class);
+		User user = userSaveRequest.getUser();
 
 		if (!this.validate(user)) {
 			return new RestResponse(HttpStatus.NOT_ACCEPTABLE.value(), this.errorMessage.toString());
