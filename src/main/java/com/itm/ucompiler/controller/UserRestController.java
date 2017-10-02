@@ -22,6 +22,7 @@ import com.itm.ucompiler.exceptions.UcompilerException;
 import com.itm.ucompiler.model.User;
 import com.itm.ucompiler.request.UserSaveRequest;
 import com.itm.ucompiler.service.UserService;
+import com.itm.ucompiler.util.Captcha;
 import com.itm.ucompiler.util.Encryption;
 import com.itm.ucompiler.util.RestResponse;
 
@@ -99,6 +100,17 @@ public class UserRestController {
 
 		return new RestResponse(HttpStatus.OK.value(), "Operacion exitosa");
 
+	}
+
+	/**
+	 * This method return the captcha generated
+	 * 
+	 * 
+	 * @return captcha
+	 */
+	@RequestMapping(value = "/getCaptcha", method = RequestMethod.GET)
+	public String getCaptcha() {
+		return Captcha.captcha();
 	}
 
 	/**
