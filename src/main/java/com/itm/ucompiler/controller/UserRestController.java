@@ -90,10 +90,30 @@ public class UserRestController {
 					"No se puede modificar ni el correo ni la contraseña");
 		}
 
+		if (!validatePasswordMatch(userSaveRequest, userFound)) {
+			return new RestResponse(HttpStatus.NOT_ACCEPTABLE.value(), "Las contraseñas no coinciden");
+		}
+
 		this.complete(user);
 		this.userService.save(user);
 
 		return new RestResponse(HttpStatus.OK.value(), "Operacion exitosa");
+
+	}
+
+	/**
+	 * validates if passwords match
+	 * 
+	 * @param userSaveRequest
+	 * @param userFound
+	 * @return
+	 */
+	private boolean validatePasswordMatch(UserSaveRequest userSaveRequest, User userFound) {
+		// If it is editing
+		if (userFound != null) {
+			return userFound.getUserPassword().equals(Encryption.encryptMD5(userSaveRequest.getConfirmPassword()));
+		}
+		return userSaveRequest.getConfirmPassword().equals(userSaveRequest.getUser().getUserPassword());
 
 	}
 
